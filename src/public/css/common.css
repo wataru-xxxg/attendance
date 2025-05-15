@@ -39,18 +39,33 @@ body {
     align-items: center;
 }
 
-.login-button {
+.attendance-button {
     color: #ffffff;
     text-decoration: none;
-    margin-left: 20px;
     font-size: 1.125rem;
     font-weight: 400;
 }
 
-.mypage-button {
+.list-button {
     color: #ffffff;
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 40px;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.request-button {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 40px;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.login-button {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 40px;
     font-size: 1.125rem;
     font-weight: 400;
 }
@@ -60,7 +75,7 @@ body {
     background-color: #000;
     border: none;
     font-size: 1.125rem;
-    margin-left: 20px;
+    margin-left: 40px;
     font-weight: 400;
 }
 
@@ -68,16 +83,6 @@ body {
     cursor: pointer;
 }
 
-.listing-button {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 8px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 1.125rem;
-    font-weight: 400;
-    margin-left: 20px;
-}
 
 @media (max-width: 1024px) {
     .search-container {
