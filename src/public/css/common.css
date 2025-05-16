@@ -62,6 +62,14 @@ body {
     font-weight: 400;
 }
 
+.staff-button {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 40px;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
 .login-button {
     color: #ffffff;
     text-decoration: none;
@@ -82,7 +90,6 @@ body {
 .logout-button:hover {
     cursor: pointer;
 }
-
 
 @media (max-width: 1024px) {
     .search-container {
