@@ -2,10 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AttendanceController;
 
-Route::get('/', function () {
-    return view('attendance');
-})->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+});
 
 Route::get('/admin/login', function () {
     return view('admin.login');
