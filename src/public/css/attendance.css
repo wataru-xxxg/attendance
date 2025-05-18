@@ -1,4 +1,4 @@
-    .container {
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,34 +11,74 @@
     background-color: #e0e0e0;
     color: #333333;
     padding: 5px 20px;
-    border-radius: 20px;
+    border-radius: 50px;
     margin-bottom: 30px;
-    font-size: 14px;
+    font-size: 1.125rem;
+}
+
+.attendance-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .date-display {
-    font-size: 24px;
+    font-size: 2.5rem;
     margin-bottom: 20px;
-    font-weight: normal;
+    font-weight: 400;
+    text-align: center;
 }
 
 .time-display {
-    font-size: 80px;
-    font-weight: bold;
-    margin-bottom: 40px;
+    font-size: 5rem;
+    margin-bottom: 80px;
+    text-align: center;
+    width: 100%;
 }
 
-.attendance-button {
+.attendance-buttons {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.begin-button,
+.finish-button {
     background-color: #000000;
     color: #ffffff;
     border: none;
     padding: 15px 60px;
-    border-radius: 30px;
-    font-size: 18px;
+    border-radius: 20px;
+    font-size: 2rem;
     cursor: pointer;
     transition: background-color 0.3s;
+    min-width: 200px;
 }
 
-.attendance-button:hover {
+.begin-button:hover,
+.finish-button:hover {
     background-color: #333333;
+}
+
+.beginBreak-button,
+.finishBreak-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 15px 60px;
+    border-radius: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 200px;
+}
+
+.beginBreak-button:hover,
+.finishBreak-button:hover {
+    background-color: #333333;
+    color: #ffffff;
+    border-color: #333333;
 }

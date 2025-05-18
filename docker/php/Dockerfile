@@ -14,4 +14,7 @@ RUN curl -sSL https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhs
   chmod +x mhsendmail && \
   mv mhsendmail /usr/local/bin/mhsendmail
 
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get install -y nodejs
+
 WORKDIR /var/www
