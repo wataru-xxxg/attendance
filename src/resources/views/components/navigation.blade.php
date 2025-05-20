@@ -1,7 +1,7 @@
 <div class="nav-links">
-    <a href="/mypage" class="attendance-button">勤怠</a>
-    <a href="/sell" class="list-button">勤怠一覧</a>
-    <a href="/sell" class="request-button">申請</a>
+    <a href="/attendance" class="attendance-button">勤怠</a>
+    <a href="/attendance/list" class="list-button">勤怠一覧</a>
+    <a href="/attendance/request" class="request-button">申請</a>
     @if (Auth::check())
     <form class="logout-form" action="/logout" method="post">
         @csrf
