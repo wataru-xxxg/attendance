@@ -27,4 +27,13 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index');
     }
+
+    public function attendanceList()
+    {
+        $id = Auth::user()->id;
+        $stamps = Stamp::where('user_id', $id)
+            ->whereMonth('stamped_at', now()->month)
+            ->get();
+        return view('attendance-list', compact('stamps'));
+    }
 }
