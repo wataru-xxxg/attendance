@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStampsTable extends Migration
+class CreateCorrectionRequestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateStampsTable extends Migration
      */
     public function up()
     {
-        Schema::create('stamps', function (Blueprint $table) {
+        Schema::create('correction_requests', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('stamp_type');
-            $table->time('stamped_at');
+            $table->date('date');
+            $table->boolean('approved')->default(false);
+            $table->text('notes');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateStampsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stamps');
+        Schema::dropIfExists('correction_requests');
     }
 }
