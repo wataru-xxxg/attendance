@@ -30,7 +30,8 @@
                     <td class="attendance-table-data">{{ $data['end_work'] }}</td>
                     <td class="attendance-table-data">{{ $data['break_time'] }}</td>
                     <td class="attendance-table-data">{{ $data['total_time'] }}</td>
-                    <td class="attendance-table-data"><a href="#" class="detail-btn">詳細</a></td>
+                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $data['id']]) }}"
+                            class="detail-btn">詳細</a></td>
                 </tr>
                 @endforeach
             </tbody>
