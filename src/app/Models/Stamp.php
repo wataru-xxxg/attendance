@@ -17,8 +17,6 @@ class Stamp extends Model
 
     protected $dates = [
         'stamped_at',
-        'created_at',
-        'updated_at'
     ];
 
     public function scopeLastStamp($query, $userId)

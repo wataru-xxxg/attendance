@@ -40,8 +40,22 @@
     align-items: center;
 }
 
-.date-navigation .date svg {
-    margin-right: 10px;
+.calendar-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin: 0 4px;
+    opacity: 0.3;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
 }
 
 .attendance-table {

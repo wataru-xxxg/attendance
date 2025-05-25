@@ -13,6 +13,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/list', [AttendanceController::class, 'attendanceList'])->name('attendance.list');
     Route::get('/attendance/{id}', [AttendanceController::class, 'attendanceDetail'])->name('attendance.detail');
     Route::post('/attendance/{id}', [AttendanceController::class, 'attendanceRequest'])->name('attendance.request');
+    Route::get('/stamp_correction_request/list', [AttendanceController::class, 'stampCorrectionRequestList'])->name('attendance.stampCorrectionRequestList');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 

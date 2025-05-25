@@ -18,6 +18,7 @@ class StampSeeder extends Seeder
             // 土日を除外
             if (!$baseDate->isWeekend()) {
                 $this->createDailyStamps($baseDate->copy(), 1);
+                $this->createDailyStamps($baseDate->copy(), 2);
             }
             $baseDate->addDay();
         }

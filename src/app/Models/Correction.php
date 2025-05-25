@@ -11,14 +11,18 @@ class Correction extends Model
 
     protected $fillable = [
         'user_id',
-        'request_id',
+        'correction_request_id',
         'stamp_type',
         'corrected_time',
     ];
 
+    protected $dates = [
+        'corrected_at',
+    ];
+
     public function correctionRequest()
     {
-        return $this->belongsTo(CorrectionRequest::class, 'request_id');
+        return $this->belongsTo(CorrectionRequest::class, 'correction_request_id');
     }
 
     public function user()

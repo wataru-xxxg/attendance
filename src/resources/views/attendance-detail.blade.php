@@ -34,7 +34,7 @@
             </tr>
             <tr class="detail-row">
                 <th class="label">出勤・退勤</th>
-                <td class="value"><input type="text" name="start_work" value="@if(old('start_work')){{ old('start_work') }}@else{{ $attendanceData['start_work'] }}@endif" class="time-input">
+                <td class="value"><input type="text" name="start_work" value="@if(old('start_work')){{ old('start_work') }}@else{{ $attendanceData['start_work'] }}@endif" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif class="time-input">
                     @error('start_work')
                     <div class="time-error">
                         {{ $message }}
@@ -46,7 +46,7 @@
                     @endif
                 </td>
                 <td class="separator">～</td>
-                <td class="value"><input type="text" name="end_work" value="@if(old('end_work')){{ old('end_work') }}@else{{ $attendanceData['end_work'] }}@endif" class="time-input">
+                <td class="value"><input type="text" name="end_work" value="@if(old('end_work')){{ old('end_work') }}@else{{ $attendanceData['end_work'] }}@endif" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif class="time-input">
                     @error('end_work')
                     <div class="time-error">
                         {{ $message }}
@@ -67,7 +67,7 @@
                 <th class="label">休憩{{ $key + 1 }}</th>
                 @endif
                 <td class="value">
-                    <input type="text" name="break_start[]" value="@if(old('break_start.'.$key)){{ old('break_start.'.$key) }}@else{{ $break[0]->format('H:i') }}@endif" class="time-input">
+                    <input type="text" name="break_start[]" value="@if(old('break_start.'.$key)){{ old('break_start.'.$key) }}@else{{ $break[0] }}@endif" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif class="time-input">
                     @error('break_start.'.$key)
                     <div class="time-error">
                         {{ $message }}
@@ -81,7 +81,7 @@
                 <td class="separator">～</td>
                 @if(isset($break[1]))
                 <td class="value">
-                    <input type="text" name="break_end[]" value="@if(old('break_end.'.$key)){{ old('break_end.'.$key) }}@else{{ $break[1]->format('H:i') }}@endif" class="time-input">
+                    <input type="text" name="break_end[]" value="@if(old('break_end.'.$key)){{ old('break_end.'.$key) }}@else{{ $break[1] }}@endif" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif class="time-input">
                     @error('break_end.'.$key)
                     <div class="time-error">
                         {{ $message }}
@@ -94,11 +94,12 @@
                 </td>
                 @else
                 <td class="value">
-                    <input type="text" name="break_end[]" value="" class="time-input">
+                    <input type="text" name="break_end[]" value="" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif class="time-input">
                 </td>
                 @endif
             </tr>
             @endforeach
+            @if(!($attendanceData['request_exists']))
             <tr class="detail-row">
                 <th class="label">休憩@if(count($attendanceData['break']) > 0)
                     {{ count($attendanceData['break']) + 1 }}
@@ -130,9 +131,10 @@
                     @endif
                 </td>
             </tr>
+            @endif
             <tr class="detail-row">
                 <th class="label">備考</th>
-                <td class="notes-value" colspan="3"><textarea class="notes" name="notes">{{ old('notes') }}</textarea>
+                <td class="notes-value" colspan="3"><textarea class="notes" name="notes" @if($attendanceData['request_exists'] && !$attendanceData['approved']) disabled @endif>@if(old('notes')){{ old('notes') }}@else{{ $attendanceData['notes'] }}@endif</textarea>
                     @error('notes')
                     <div class="notes-error">
                         {{ $message }}
@@ -142,9 +144,13 @@
             </tr>
         </table>
 
+        @if($attendanceData['request_exists'] && !$attendanceData['approved'])
+        <p class="caution-message">*承認待ちのため修正はできません。</p>
+        @else
         <div class="button-container">
             <button class="edit-button">修正</button>
         </div>
+        @endif
     </form>
 </div>
 @endsection
