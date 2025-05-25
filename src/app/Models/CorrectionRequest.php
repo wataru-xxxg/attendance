@@ -15,4 +15,14 @@ class CorrectionRequest extends Model
         'approved',
         'notes',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function corrections()
+    {
+        return $this->hasMany(Correction::class);
+    }
 }

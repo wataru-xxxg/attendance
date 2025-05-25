@@ -44,38 +44,71 @@ class AttendanceController extends Controller
     public function attendanceDetail($id)
     {
         $date = Carbon::parse($id)->format('Y-m-d');
-        $startWork = Stamp::where('user_id', Auth::id())
-            ->whereDate('stamped_at', '=', $date)
-            ->where('stamp_type', '出勤')
+        $correctionRequest = CorrectionRequest::where('user_id', Auth::id())
+            ->where('date', $date)
             ->first();
-        $endWork = Stamp::where('user_id', Auth::id())
-            ->whereDate('stamped_at', '=', $date)
-            ->where('stamp_type', '退勤')
-            ->first();
-
-        $break = [];
-        Stamp::where('user_id', Auth::id())
-            ->whereDate('stamped_at', '=', $date)
-            ->whereIn('stamp_type', ['休憩入', '休憩戻'])
-            ->orderBy('stamped_at', 'asc')
-            ->chunk(2, function ($stamps) use (&$break) {
-                $breakArray = [];
-
-                foreach ($stamps as $stamp) {
-                    $breakArray[] = $stamp->stamped_at;
-                }
-
-                $break[] = $breakArray;
-            });
 
         $attendanceData = [
             'id' => $id,
             'year' => Carbon::parse($id)->format('Y年'),
             'date' => Carbon::parse($id)->format('m月d日'),
-            'start_work' => $startWork ? $startWork->stamped_at->format('H:i') : '',
-            'end_work' => $endWork ? $endWork->stamped_at->format('H:i') : '',
-            'break' => $break
+            'notes' => '',
         ];
+
+        $break = [];
+
+        if ($correctionRequest) {
+            $startWork = $correctionRequest->corrections()->where('stamp_type', '出勤')->first();
+            $endWork = $correctionRequest->corrections()->where('stamp_type', '退勤')->first();
+
+            $attendanceData['start_work'] = $startWork->corrected_at->format('H:i');
+            $attendanceData['end_work'] = $endWork->corrected_at->format('H:i');
+
+            $correctionRequest->corrections()->whereIn('stamp_type', ['休憩入', '休憩戻'])->orderBy('corrected_at', 'asc')->chunk(2, function ($corrections) use (&$break) {
+                $breakArray = [];
+
+                foreach ($corrections as $correction) {
+                    $breakArray[] = $correction->corrected_at->format('H:i');
+                }
+
+                $break[] = $breakArray;
+            });
+
+            $attendanceData['request_exists'] = true;
+            $attendanceData['approved'] = $correctionRequest->approved;
+            $attendanceData['notes'] = $correctionRequest->notes;
+        } else {
+            $startWork = Stamp::where('user_id', Auth::id())
+                ->whereDate('stamped_at', '=', $date)
+                ->where('stamp_type', '出勤')
+                ->first();
+            $endWork = Stamp::where('user_id', Auth::id())
+                ->whereDate('stamped_at', '=', $date)
+                ->where('stamp_type', '退勤')
+                ->first();
+
+            $attendanceData['start_work'] = $startWork ? $startWork->stamped_at->format('H:i') : '';
+            $attendanceData['end_work'] = $endWork ? $endWork->stamped_at->format('H:i') : '';
+
+            Stamp::where('user_id', Auth::id())
+                ->whereDate('stamped_at', '=', $date)
+                ->whereIn('stamp_type', ['休憩入', '休憩戻'])
+                ->orderBy('stamped_at', 'asc')
+                ->chunk(2, function ($stamps) use (&$break) {
+                    $breakArray = [];
+
+                    foreach ($stamps as $stamp) {
+                        $breakArray[] = $stamp->stamped_at->format('H:i');
+                    }
+
+                    $break[] = $breakArray;
+                });
+
+            $attendanceData['request_exists'] = false;
+            $attendanceData['approved'] = false;
+        }
+
+        $attendanceData['break'] = $break;
 
         return view('attendance-detail', compact('attendanceData'));
     }
@@ -94,13 +127,13 @@ class AttendanceController extends Controller
             'user_id' => $userId,
             'request_id' => $correctionRequest->id,
             'stamp_type' => '出勤',
-            'corrected_time' => $request->start_work,
+            'corrected_at' => Carbon::parse($request->start_work),
         ]);
         Correction::create([
             'user_id' => $userId,
             'request_id' => $correctionRequest->id,
             'stamp_type' => '退勤',
-            'corrected_time' => $request->end_work,
+            'corrected_at' => Carbon::parse($request->end_work),
         ]);
 
         $breakStart = $request->break_start;
@@ -111,7 +144,7 @@ class AttendanceController extends Controller
                 'user_id' => $userId,
                 'request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩入',
-                'corrected_time' => $breakStart[$key],
+                'corrected_at' => Carbon::parse($breakStart[$key]),
             ]);
         }
         foreach ($breakEnd as $key => $value) {
@@ -119,9 +152,16 @@ class AttendanceController extends Controller
                 'user_id' => $userId,
                 'request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩戻',
-                'corrected_time' => $breakEnd[$key],
+                'corrected_at' => Carbon::parse($breakEnd[$key]),
             ]);
         }
         return redirect()->route('attendance.index');
+    }
+
+    public function stampCorrectionRequestList()
+    {
+        $userId = Auth::user()->id;
+        $correctionRequests = CorrectionRequest::where('user_id', $userId)->where('approved', 0)->get();
+        return view('request-list', compact('correctionRequests'));
     }
 }

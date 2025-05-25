@@ -15,10 +15,9 @@ class CreateCorrectionsTable extends Migration
     {
         Schema::create('corrections', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
-            $table->integer('request_id');
+            $table->integer('correction_request_id');
             $table->string('stamp_type');
-            $table->time('corrected_time');
+            $table->timestamp('corrected_at');
             $table->timestamps();
         });
     }

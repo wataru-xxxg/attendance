@@ -17,7 +17,7 @@ class CreateStampsTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('stamp_type');
-            $table->time('stamped_at');
+            $table->timestamp('stamped_at');
             $table->timestamps();
         });
     }

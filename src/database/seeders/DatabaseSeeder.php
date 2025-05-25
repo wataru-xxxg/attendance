@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             AdminUsersTableSeeder::class,
             StampSeeder::class,
+            CorrectionRequestSeeder::class,
+            CorrectionSeeder::class,
         ]);
     }
 }

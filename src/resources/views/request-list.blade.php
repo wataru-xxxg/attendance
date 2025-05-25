@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance-list.css') }}">
+<link rel="stylesheet" href="{{ asset('css/request-list.css') }}">
 @endsection
 
 @section('livewire')
@@ -13,12 +13,13 @@
 @endsection
 
 @section('content')
-<h1 class="page-title">勤怠一覧</h1>
 <div class="container">
-    @livewire('attendance-list')
-</div>
-@endsection
+    <div class="page-header">
+        <h1 class="page-title">申請一覧</h1>
+    </div>
 
-@section('scripts')
+    @livewire('request-list')
+</div>
+
 @livewireScripts
 @endsection
