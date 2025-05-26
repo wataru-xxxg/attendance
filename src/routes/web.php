@@ -26,6 +26,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/list', function () {
         return view('admin.attendance-list');
     })->name('admin.attendance.list');
+    Route::get('/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
+    Route::put('/attendance/detail/{id}', [AdminController::class, 'attendanceCorrect'])->name('admin.attendance.correct');
     Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
 });
 

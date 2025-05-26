@@ -46,6 +46,7 @@ class AttendanceController extends Controller
         $date = Carbon::parse($id)->format('Y-m-d');
         $correctionRequest = CorrectionRequest::where('user_id', Auth::id())
             ->where('date', $date)
+            ->orderBy('id', 'desc')
             ->first();
 
         $attendanceData = [
@@ -61,8 +62,8 @@ class AttendanceController extends Controller
             $startWork = $correctionRequest->corrections()->where('stamp_type', '出勤')->first();
             $endWork = $correctionRequest->corrections()->where('stamp_type', '退勤')->first();
 
-            $attendanceData['start_work'] = $startWork->corrected_at->format('H:i');
-            $attendanceData['end_work'] = $endWork->corrected_at->format('H:i');
+            $attendanceData['startWork'] = $startWork->corrected_at->format('H:i');
+            $attendanceData['endWork'] = $endWork->corrected_at->format('H:i');
 
             $correctionRequest->corrections()->whereIn('stamp_type', ['休憩入', '休憩戻'])->orderBy('corrected_at', 'asc')->chunk(2, function ($corrections) use (&$break) {
                 $breakArray = [];
@@ -74,7 +75,7 @@ class AttendanceController extends Controller
                 $break[] = $breakArray;
             });
 
-            $attendanceData['request_exists'] = true;
+            $attendanceData['requestExists'] = true;
             $attendanceData['approved'] = $correctionRequest->approved;
             $attendanceData['notes'] = $correctionRequest->notes;
         } else {
@@ -87,8 +88,8 @@ class AttendanceController extends Controller
                 ->where('stamp_type', '退勤')
                 ->first();
 
-            $attendanceData['start_work'] = $startWork ? $startWork->stamped_at->format('H:i') : '';
-            $attendanceData['end_work'] = $endWork ? $endWork->stamped_at->format('H:i') : '';
+            $attendanceData['startWork'] = $startWork ? $startWork->stamped_at->format('H:i') : '';
+            $attendanceData['endWork'] = $endWork ? $endWork->stamped_at->format('H:i') : '';
 
             Stamp::where('user_id', Auth::id())
                 ->whereDate('stamped_at', '=', $date)
@@ -104,11 +105,13 @@ class AttendanceController extends Controller
                     $break[] = $breakArray;
                 });
 
-            $attendanceData['request_exists'] = false;
+            $attendanceData['requestExists'] = false;
             $attendanceData['approved'] = false;
         }
 
         $attendanceData['break'] = $break;
+
+        $attendanceData['admin'] = false;
 
         return view('attendance-detail', compact('attendanceData'));
     }
@@ -124,14 +127,12 @@ class AttendanceController extends Controller
         ]);
 
         Correction::create([
-            'user_id' => $userId,
-            'request_id' => $correctionRequest->id,
+            'correction_request_id' => $correctionRequest->id,
             'stamp_type' => '出勤',
             'corrected_at' => Carbon::parse($request->start_work),
         ]);
         Correction::create([
-            'user_id' => $userId,
-            'request_id' => $correctionRequest->id,
+            'correction_request_id' => $correctionRequest->id,
             'stamp_type' => '退勤',
             'corrected_at' => Carbon::parse($request->end_work),
         ]);
@@ -141,16 +142,14 @@ class AttendanceController extends Controller
 
         foreach ($breakStart as $key => $value) {
             Correction::create([
-                'user_id' => $userId,
-                'request_id' => $correctionRequest->id,
+                'correction_request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩入',
                 'corrected_at' => Carbon::parse($breakStart[$key]),
             ]);
         }
         foreach ($breakEnd as $key => $value) {
             Correction::create([
-                'user_id' => $userId,
-                'request_id' => $correctionRequest->id,
+                'correction_request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩戻',
                 'corrected_at' => Carbon::parse($breakEnd[$key]),
             ]);
