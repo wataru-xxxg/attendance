@@ -1,8 +1,5 @@
 <div>
-    <div class="title-bar">
-        <h1>{{ $currentDate->format('Y年m月d日') }}の勤怠</h1>
-    </div>
-
+    <h1 class="page-title">{{ $currentDate->format('Y年m月d日') }}の勤怠</h1>
     <div class="date-navigation">
         <button wire:click="previousDay" class="day-nav prev"><img src="{{ asset('images/arrow.png') }}" alt="前日" class="arrow-icon">
             前日</button>
@@ -14,26 +11,26 @@
             翌日</button>
     </div>
 
-    <div class="attendance-table">
-        <table>
+    <div class="attendance-table-wrapper">
+        <table class="attendance-table">
             <thead>
                 <tr>
-                    <th>名前</th>
-                    <th>出勤</th>
-                    <th>退勤</th>
-                    <th>休憩</th>
-                    <th>合計</th>
-                    <th>詳細</th>
+                    <th class="attendance-table-header">名前</th>
+                    <th class="attendance-table-header">出勤</th>
+                    <th class="attendance-table-header">退勤</th>
+                    <th class="attendance-table-header">休憩</th>
+                    <th class="attendance-table-header">合計</th>
+                    <th class="attendance-table-header">詳細</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($attendanceData as $attendance)
                 <tr>
-                    <td>{{ $attendance['user_name'] }}</td>
-                    <td>{{ $attendance['begin_work'] }}</td>
-                    <td>{{ $attendance['end_work'] }}</td>
-                    <td>{{ $attendance['break_time'] }}</td>
-                    <td>{{ $attendance['total_time'] }}</td>
+                    <td class="attendance-table-data">{{ $attendance['user_name'] }}</td>
+                    <td class="attendance-table-data">{{ $attendance['begin_work'] }}</td>
+                    <td class="attendance-table-data">{{ $attendance['end_work'] }}</td>
+                    <td class="attendance-table-data">{{ $attendance['break_time'] }}</td>
+                    <td class="attendance-table-data">{{ $attendance['total_time'] }}</td>
                     <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $attendance['id'], 'user_id' => $attendance['user_id']]) }}"
                             class="detail-btn">詳細</a></td>
                 </tr>

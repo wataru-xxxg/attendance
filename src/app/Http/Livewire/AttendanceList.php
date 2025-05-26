@@ -30,19 +30,19 @@ class AttendanceList extends Component
             $date = Carbon::create($this->currentMonth->year, $this->currentMonth->month, $i);
             $dateKey = $date->format('Y-m-d');
 
-            $correctionRequests = CorrectionRequest::where('user_id', $id)
+            $correctionRequest = CorrectionRequest::where('user_id', $id)
                 ->where('approved', true)
                 ->where('date', $dateKey)
                 ->first();
 
-            if ($correctionRequests) {
-                $beginWorkCorrection = $correctionRequests->corrections->where('stamp_type', '出勤')->first();
+            if ($correctionRequest) {
+                $beginWorkCorrection = $correctionRequest->corrections->where('stamp_type', '出勤')->first();
                 $beginWork = $beginWorkCorrection->corrected_at->format('H:i');
 
-                $endWorkCorrection = $correctionRequests->corrections->where('stamp_type', '退勤')->first();
+                $endWorkCorrection = $correctionRequest->corrections->where('stamp_type', '退勤')->first();
                 $endWork = $endWorkCorrection->corrected_at->format('H:i');
 
-                $corrections = Correction::where('correction_request_id', $correctionRequests->id)->orderBy('corrected_at', 'desc')->get();
+                $corrections = Correction::where('correction_request_id', $correctionRequest->id)->orderBy('corrected_at', 'desc')->get();
 
                 $breakTime = $this->getCorrectedBreakTimeAttribute($corrections);
                 $totalTime = $this->getCorrectedTotalTimeAttribute($beginWorkCorrection, $endWorkCorrection) - $breakTime;
