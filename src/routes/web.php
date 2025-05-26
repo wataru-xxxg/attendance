@@ -22,11 +22,12 @@ Route::get('/admin/login', function () {
 });
 Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
 
-Route::get('/admin/attendance/list', function () {
-    return view('admin.attendance-list');
-})->middleware('auth:admin');
-
-Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/admin/attendance/list', function () {
+        return view('admin.attendance-list');
+    })->name('admin.attendance.list');
+    Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
+});
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
