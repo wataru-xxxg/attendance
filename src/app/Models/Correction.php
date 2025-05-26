@@ -13,7 +13,7 @@ class Correction extends Model
         'user_id',
         'correction_request_id',
         'stamp_type',
-        'corrected_time',
+        'corrected_at',
     ];
 
     protected $dates = [

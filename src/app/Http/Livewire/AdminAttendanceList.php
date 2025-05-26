@@ -75,15 +75,15 @@ class AdminAttendanceList extends Component
             }
 
             $this->attendanceData[] = [
-                'user_id' => $user->id,
-                'user_name' => $user->name,
+                'userId' => $user->id,
+                'userName' => $user->name,
                 'id' => $date->format('Ymd'),
                 'date' => $date->format('m/d'),
-                'day_of_week' => $date->locale('ja')->isoFormat('ddd'),
-                'begin_work' => $beginWork,
-                'end_work' => $endWork,
-                'break_time' => $breakTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i') : '',
-                'total_time' => $totalTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i') : ''
+                'dayOfWeek' => $date->locale('ja')->isoFormat('ddd'),
+                'beginWork' => $beginWork,
+                'endWork' => $endWork,
+                'breakTime' => $breakTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i') : '',
+                'totalTime' => $totalTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i') : ''
             ];
         }
     }
