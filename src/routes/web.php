@@ -28,6 +28,9 @@ Route::middleware('auth:admin')->group(function () {
     })->name('admin.attendance.list');
     Route::get('/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
     Route::put('/attendance/detail/{id}', [AdminController::class, 'attendanceCorrect'])->name('admin.attendance.correct');
+    Route::get('/admin/staff/list', [AdminController::class, 'staffList'])->name('admin.staff.list');
+    Route::get('/admin/attendance/staff/{id}', [AdminController::class, 'staffAttendance'])->name('admin.attendance.staff');
+    Route::get('/stamp_correction_request/list', [AdminController::class, 'stampCorrectionRequestList'])->name('admin.stampCorrectionRequestList');
     Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
 });
 

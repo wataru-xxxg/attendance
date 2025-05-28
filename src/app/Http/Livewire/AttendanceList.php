@@ -13,9 +13,11 @@ class AttendanceList extends Component
 {
     public $currentMonth;
     public $attendanceData = [];
+    public $userId;
 
-    public function mount()
+    public function mount($userId)
     {
+        $this->userId = $userId;
         $this->currentMonth = Carbon::now();
         $this->loadAttendanceData();
     }
@@ -24,13 +26,13 @@ class AttendanceList extends Component
     {
         $daysInMonth = $this->currentMonth->daysInMonth;
         $this->attendanceData = [];
-        $id = Auth::id();
+        $userId = $this->userId;
 
         for ($i = 1; $i <= $daysInMonth; $i++) {
             $date = Carbon::create($this->currentMonth->year, $this->currentMonth->month, $i);
             $dateKey = $date->format('Y-m-d');
 
-            $correctionRequest = CorrectionRequest::where('user_id', $id)
+            $correctionRequest = CorrectionRequest::where('user_id', $userId)
                 ->where('approved', true)
                 ->where('date', $dateKey)
                 ->first();
@@ -47,19 +49,19 @@ class AttendanceList extends Component
                 $breakTime = $this->getCorrectedBreakTimeAttribute($corrections);
                 $totalTime = $this->getCorrectedTotalTimeAttribute($beginWorkCorrection, $endWorkCorrection) - $breakTime;
             } else {
-                $beginWorkStamp = Stamp::where('user_id', Auth::id())
+                $beginWorkStamp = Stamp::where('user_id', $userId)
                     ->whereDate('stamped_at', '=', $dateKey)
                     ->where('stamp_type', '出勤')
                     ->first();
                 $beginWork = $beginWorkStamp ? $beginWorkStamp->stamped_at->format('H:i') : '';
 
-                $endWorkStamp = Stamp::where('user_id', Auth::id())
+                $endWorkStamp = Stamp::where('user_id', $userId)
                     ->whereDate('stamped_at', '=', $dateKey)
                     ->where('stamp_type', '退勤')
                     ->first();
                 $endWork = $endWorkStamp ? $endWorkStamp->stamped_at->format('H:i') : '';
 
-                $stamps = Stamp::where('user_id', $id)
+                $stamps = Stamp::where('user_id', $userId)
                     ->whereDate('stamped_at', '=', $dateKey)
                     ->whereIn('stamp_type', ['休憩入', '休憩戻'])
                     ->orderBy('stamped_at', 'desc')
@@ -76,11 +78,12 @@ class AttendanceList extends Component
             $this->attendanceData[] = [
                 'id' => $date->format('Ymd'),
                 'date' => $date->format('m/d'),
-                'day_of_week' => $date->locale('ja')->isoFormat('ddd'),
-                'begin_work' => $beginWork,
-                'end_work' => $endWork,
-                'break_time' => $breakTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i') : '',
-                'total_time' => $totalTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i') : ''
+                'dayOfWeek' => $date->locale('ja')->isoFormat('ddd'),
+                'beginWork' => $beginWork,
+                'endWork' => $endWork,
+                'breakTime' => $breakTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i') : '',
+                'totalTime' => $totalTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i') : '',
+                'user_id' => $userId
             ];
         }
     }

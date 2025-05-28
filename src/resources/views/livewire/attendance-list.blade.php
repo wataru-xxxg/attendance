@@ -25,12 +25,12 @@
             <tbody>
                 @foreach($attendanceData as $data)
                 <tr>
-                    <td class="attendance-table-data">{{ $data['date'] }}({{ $data['day_of_week'] }})</td>
-                    <td class="attendance-table-data">{{ $data['begin_work'] }}</td>
-                    <td class="attendance-table-data">{{ $data['end_work'] }}</td>
-                    <td class="attendance-table-data">{{ $data['break_time'] }}</td>
-                    <td class="attendance-table-data">{{ $data['total_time'] }}</td>
-                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $data['id']]) }}"
+                    <td class="attendance-table-data">{{ $data['date'] }}({{ $data['dayOfWeek'] }})</td>
+                    <td class="attendance-table-data">{{ $data['beginWork'] }}</td>
+                    <td class="attendance-table-data">{{ $data['endWork'] }}</td>
+                    <td class="attendance-table-data">{{ $data['breakTime'] }}</td>
+                    <td class="attendance-table-data">{{ $data['totalTime'] }}</td>
+                    <td class="attendance-table-data"><a href="@if(Auth::guard('admin')->check()){{ route('admin.attendance.detail', ['id' => $data['id'], 'userId' => $data['user_id']]) }}@else{{ route('attendance.detail', ['id' => $data['id']]) }}@endif"
                             class="detail-btn">詳細</a></td>
                 </tr>
                 @endforeach

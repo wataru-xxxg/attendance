@@ -9,13 +9,13 @@
 @endsection
 
 @section('navigation')
-@include('components.navigation')
+@include('components.admin-navigation')
 @endsection
 
 @section('content')
 <div class="container">
-    <h1 class="page-title">勤怠一覧</h1>
-    @livewire('attendance-list', ['userId' => Auth::id()])
+    <h1 class="page-title">{{ $user->name }}さんの勤怠</h1>
+    @livewire('attendance-list', ['userId' => $user->id])
 </div>
 
 @livewireScripts
