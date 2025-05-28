@@ -161,4 +161,22 @@ class AdminController extends Controller
         }
         return redirect()->route('admin.attendance.list');
     }
+
+    public function staffList()
+    {
+        $users = User::all();
+        return view('admin.staff-list', compact('users'));
+    }
+
+    public function staffAttendance($id)
+    {
+        $user = User::find($id);
+        return view('admin.staff-attendance', compact('user'));
+    }
+
+    public function stampCorrectionRequestList()
+    {
+        $correctionRequests = CorrectionRequest::where('approved', 0)->get();
+        return view('request-list', compact('correctionRequests'));
+    }
 }

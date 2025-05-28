@@ -155,6 +155,17 @@
             </tr>
         </table>
 
+        @if(Auth::guard('admin')->check())
+        @if($attendanceData['requestExists'] && !$attendanceData['approved'])
+        <div class="button-container">
+            <button class="edit-button">承認</button>
+        </div>
+        @else
+        <div class="button-container">
+            <button class="edit-button">修正</button>
+        </div>
+        @endif
+        @else
         @if($attendanceData['requestExists'] && !$attendanceData['approved'])
         <p class="caution-message">*承認待ちのため修正はできません。</p>
         @else
@@ -162,6 +173,8 @@
             <button class="edit-button">修正</button>
         </div>
         @endif
+        @endif
+
     </form>
 </div>
 @endsection
