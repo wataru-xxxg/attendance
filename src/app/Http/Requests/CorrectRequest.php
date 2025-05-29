@@ -26,7 +26,7 @@ class CorrectRequest extends FormRequest
         return [
             'startWork' => ['required', 'before:endWork', 'regex:/\A\d{2}:\d{2}\z/'],
             'endWork' => ['required', 'after:startWork', 'regex:/\A\d{2}:\d{2}\z/'],
-            'breakStart.*' => ['nullable', 'required_with:break_end.*', 'after:startWork', 'before:endWork', function ($attribute, $value, $fail) {
+            'breakStart.*' => ['nullable', 'required_with:breakEnd.*', 'after:startWork', 'before:endWork', function ($attribute, $value, $fail) {
                 $index = str_replace('breakStart.', '', $attribute);
                 $breakStart = $value;
                 $breakEnd = $this->input('breakEnd.' . $index);

@@ -24,7 +24,7 @@
                     <td class="request-table-data">{{ Carbon\Carbon::parse($correctionRequest->date)->format('Y/m/d') }}</td>
                     <td class="request-table-data">{{ $correctionRequest->notes }}</td>
                     <td class="request-table-data">{{ Carbon\Carbon::parse($correctionRequest->created_at)->format('Y/m/d') }}</td>
-                    <td class="request-table-data"><a href="@if(Auth::guard('admin')->check()){{ route('admin.attendance.detail', ['id' => Carbon\Carbon::parse($correctionRequest->date)->format('Ymd'), 'userId' => $correctionRequest->user_id]) }}@else{{ route('attendance.detail', Carbon\Carbon::parse($correctionRequest->date)->format('Ymd')) }}@endif" class="detail-link">詳細</a></td>
+                    <td class="request-table-data"><a href="@if(Auth::guard('admin')->check()){{ route('admin.request.approve', ['attendance_correct_request' => $correctionRequest->id]) }}@else{{ route('attendance.detail', Carbon\Carbon::parse($correctionRequest->date)->format('Ymd')) }}@endif" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach
             </tbody>

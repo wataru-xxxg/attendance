@@ -11,9 +11,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/attendance/list', [AttendanceController::class, 'attendanceList'])->name('attendance.list');
-    Route::get('/attendance/{id}', [AttendanceController::class, 'attendanceDetail'])->name('attendance.detail');
-    Route::post('/attendance/{id}', [AttendanceController::class, 'attendanceRequest'])->name('attendance.request');
-    Route::get('/stamp_correction_request/list', [AttendanceController::class, 'stampCorrectionRequestList'])->name('attendance.stampCorrectionRequestList');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
@@ -21,16 +18,17 @@ Route::get('/admin/login', function () {
     return view('admin.login');
 });
 Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
+Route::get('/attendance/{id}', [AttendanceController::class, 'attendanceDetail'])->name('attendance.detail');
+Route::post('/attendance/{id}', [AttendanceController::class, 'attendanceCorrect'])->name('attendance.correct');
+Route::get('/stamp_correction_request/list', [AttendanceController::class, 'stampCorrectionRequestList'])->name('request.list');
 
 Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/attendance/list', function () {
         return view('admin.attendance-list');
     })->name('admin.attendance.list');
-    Route::get('/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
-    Route::put('/attendance/detail/{id}', [AdminController::class, 'attendanceCorrect'])->name('admin.attendance.correct');
     Route::get('/admin/staff/list', [AdminController::class, 'staffList'])->name('admin.staff.list');
     Route::get('/admin/attendance/staff/{id}', [AdminController::class, 'staffAttendance'])->name('admin.attendance.staff');
-    Route::get('/stamp_correction_request/list', [AdminController::class, 'stampCorrectionRequestList'])->name('admin.stampCorrectionRequestList');
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminController::class, 'stampCorrectionRequestApprove'])->name('admin.request.approve');
     Route::post('/admin/logout', [AdminController::class, 'adminLogout'])->name('admin.logout');
 });
 

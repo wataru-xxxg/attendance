@@ -9,7 +9,11 @@
 @endsection
 
 @section('navigation')
+@if(Auth::guard('admin')->check())
+@include('components.admin-navigation')
+@else
 @include('components.navigation')
+@endif
 @endsection
 
 @section('content')
