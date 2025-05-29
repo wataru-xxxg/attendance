@@ -9,7 +9,7 @@
 @endsection
 
 @section('navigation')
-@if($attendanceData['admin'])
+@if(Auth::guard('admin')->check())
 @include('components.admin-navigation')
 @else
 @include('components.navigation')
@@ -22,15 +22,12 @@
         <h1 class="section-title">勤怠詳細</h1>
     </div>
 
-    <form action="@if($attendanceData['admin']) {{ route('admin.attendance.correct', ['id' => $attendanceData['id'], 'userId' => $attendanceData['user']->id]) }} @else /attendance/{{ $attendanceData['id'] }} @endif" method="post">
+    <form action="{{ route('attendance.correct', ['id' => $attendanceData['id'], 'userId' => $attendanceData['user']->id]) }}" method="post">
         @csrf
-        @if($attendanceData['admin'])
-        @method('PUT')
-        @endif
         <table class="attendance-details">
             <tr class="detail-row">
                 <th class="label">名前</th>
-                @if($attendanceData['admin'])
+                @if(Auth::guard('admin')->check())
                 <td class="value">{{ $attendanceData['user']->name }}</td>
                 @else
                 <td class="value">{{ Auth::user()->name }}</td>
@@ -110,33 +107,33 @@
                 @endif
             </tr>
             @endforeach
-            @if(!($attendanceData['requestExists']))
+            @if(!($attendanceData['requestExists']) || $attendanceData['approved'])
             <tr class="detail-row">
                 <th class="label">休憩@if(count($attendanceData['break']) > 0)
                     {{ count($attendanceData['break']) + 1 }}
                     @endif
                 </th>
                 <td class="value">
-                    <input type="text" name="breakStart[]" value="@if(old('breakStart.0')){{ old('breakStart.0') }}@endif" class="time-input">
-                    @error('breakStart.0')
+                    <input type="text" name="breakStart[]" value="@if(old('breakStart.'.count($attendanceData['break']))){{ old('breakStart.'.count($attendanceData['break'])) }}@endif" class="time-input">
+                    @error('breakStart.'.count($attendanceData['break']))
                     <div class="time-error">
                         {{ $message }}
                     </div>
                     @enderror
-                    @if($errors->has('breakEnd.0') && !$errors->has('breakStart.0'))
+                    @if($errors->has('breakEnd.'.count($attendanceData['break'])) && !$errors->has('breakStart.'.count($attendanceData['break'])))
                     <div class="time-error">
                     </div>
                     @endif
                 </td>
                 <td class="separator">～</td>
                 <td class="value">
-                    <input type="text" name="breakEnd[]" value="@if(old('breakEnd.0')){{ old('breakEnd.0') }}@endif" class="time-input">
-                    @error('breakEnd.0')
+                    <input type="text" name="breakEnd[]" value="@if(old('breakEnd.'.count($attendanceData['break']))){{ old('breakEnd.'.count($attendanceData['break'])) }}@endif" class="time-input">
+                    @error('breakEnd.'.count($attendanceData['break']))
                     <div class="time-error">
                         {{ $message }}
                     </div>
                     @enderror
-                    @if($errors->has('breakStart.0') && !$errors->has('breakEnd.0'))
+                    @if($errors->has('breakStart.'.count($attendanceData['break'])) && !$errors->has('breakEnd.'.count($attendanceData['break'])))
                     <div class="time-error">
                     </div>
                     @endif
@@ -154,18 +151,6 @@
                 </td>
             </tr>
         </table>
-
-        @if(Auth::guard('admin')->check())
-        @if($attendanceData['requestExists'] && !$attendanceData['approved'])
-        <div class="button-container">
-            <button class="edit-button">承認</button>
-        </div>
-        @else
-        <div class="button-container">
-            <button class="edit-button">修正</button>
-        </div>
-        @endif
-        @else
         @if($attendanceData['requestExists'] && !$attendanceData['approved'])
         <p class="caution-message">*承認待ちのため修正はできません。</p>
         @else
@@ -173,8 +158,10 @@
             <button class="edit-button">修正</button>
         </div>
         @endif
-        @endif
 
     </form>
 </div>
+
+@livewireScripts
+
 @endsection

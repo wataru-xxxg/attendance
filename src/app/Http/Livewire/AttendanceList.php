@@ -35,6 +35,7 @@ class AttendanceList extends Component
             $correctionRequest = CorrectionRequest::where('user_id', $userId)
                 ->where('approved', true)
                 ->where('date', $dateKey)
+                ->orderBy('id', 'desc')
                 ->first();
 
             if ($correctionRequest) {
@@ -81,8 +82,8 @@ class AttendanceList extends Component
                 'dayOfWeek' => $date->locale('ja')->isoFormat('ddd'),
                 'beginWork' => $beginWork,
                 'endWork' => $endWork,
-                'breakTime' => $breakTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i') : '',
-                'totalTime' => $totalTime ? Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i') : '',
+                'breakTime' => $breakTime === 0 ? '' : Carbon::createFromTime(0, 0, 0)->addMinutes($breakTime)->format('H:i'),
+                'totalTime' => $totalTime === 0 ? '' : Carbon::createFromTime(0, 0, 0)->addMinutes($totalTime)->format('H:i'),
                 'user_id' => $userId
             ];
         }
@@ -90,6 +91,10 @@ class AttendanceList extends Component
 
     public function getBreakTimeAttribute($stamps)
     {
+        if ($stamps->isEmpty()) {
+            return 0;
+        }
+
         if (count($stamps) % 2 === 1) {
             $stamps = $stamps->skip(1);
         }
@@ -123,6 +128,10 @@ class AttendanceList extends Component
 
     public function getCorrectedBreakTimeAttribute($corrections)
     {
+        if ($corrections->isEmpty()) {
+            return 0;
+        }
+
         $breakTime = 0;
         $previousStamp = null;
         foreach ($corrections as $correction) {

@@ -31,7 +31,7 @@
                     <td class="attendance-table-data">{{ $attendance['endWork'] }}</td>
                     <td class="attendance-table-data">{{ $attendance['breakTime'] }}</td>
                     <td class="attendance-table-data">{{ $attendance['totalTime'] }}</td>
-                    <td class="attendance-table-data"><a href="{{ route('admin.attendance.detail', ['id' => $attendance['id'], 'userId' => $attendance['userId']]) }}"
+                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $attendance['id'], 'userId' => $attendance['userId']]) }}"
                             class="detail-btn">詳細</a></td>
                 </tr>
                 @endforeach

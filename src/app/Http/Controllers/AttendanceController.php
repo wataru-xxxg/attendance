@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Http\Requests\CorrectRequest;
 use App\Models\CorrectionRequest;
+use App\Models\User;
 
 class AttendanceController extends Controller
 {
@@ -41,16 +42,25 @@ class AttendanceController extends Controller
         return view('attendance-list', compact('stamps'));
     }
 
-    public function attendanceDetail($id)
+    public function attendanceDetail(Request $request, $id)
     {
+        if (Auth::guard('admin')->check()) {
+            $userId = $request->userId;
+        } elseif (Auth::check()) {
+            $userId = Auth::id();
+        } else {
+            return redirect()->route('login');
+        }
+
         $date = Carbon::parse($id)->format('Y-m-d');
-        $correctionRequest = CorrectionRequest::where('user_id', Auth::id())
+        $correctionRequest = CorrectionRequest::where('user_id', $userId)
             ->where('date', $date)
             ->orderBy('id', 'desc')
             ->first();
 
         $attendanceData = [
             'id' => $id,
+            'user' => User::find($userId),
             'year' => Carbon::parse($id)->format('Y年'),
             'date' => Carbon::parse($id)->format('m月d日'),
             'notes' => '',
@@ -79,11 +89,11 @@ class AttendanceController extends Controller
             $attendanceData['approved'] = $correctionRequest->approved;
             $attendanceData['notes'] = $correctionRequest->notes;
         } else {
-            $startWork = Stamp::where('user_id', Auth::id())
+            $startWork = Stamp::where('user_id', $userId)
                 ->whereDate('stamped_at', '=', $date)
                 ->where('stamp_type', '出勤')
                 ->first();
-            $endWork = Stamp::where('user_id', Auth::id())
+            $endWork = Stamp::where('user_id', $userId)
                 ->whereDate('stamped_at', '=', $date)
                 ->where('stamp_type', '退勤')
                 ->first();
@@ -91,7 +101,7 @@ class AttendanceController extends Controller
             $attendanceData['startWork'] = $startWork ? $startWork->stamped_at->format('H:i') : '';
             $attendanceData['endWork'] = $endWork ? $endWork->stamped_at->format('H:i') : '';
 
-            Stamp::where('user_id', Auth::id())
+            Stamp::where('user_id', $userId)
                 ->whereDate('stamped_at', '=', $date)
                 ->whereIn('stamp_type', ['休憩入', '休憩戻'])
                 ->orderBy('stamped_at', 'asc')
@@ -116,51 +126,98 @@ class AttendanceController extends Controller
         return view('attendance-detail', compact('attendanceData'));
     }
 
-    public function attendanceRequest(CorrectRequest $request)
+    public function attendanceCorrect(CorrectRequest $request)
     {
-        $userId = Auth::user()->id;
         $id = Carbon::parse($request->id)->format('Y-m-d');
-        $correctionRequest = CorrectionRequest::create([
-            'user_id' => $userId,
+        $year = Carbon::parse($request->id)->year;
+        $month = Carbon::parse($request->id)->month;
+        $day = Carbon::parse($request->id)->day;
+
+        $startWork = $request->startWork;
+        $startWorkHour = Carbon::parse($startWork)->hour;
+        $startWorkMinute = Carbon::parse($startWork)->minute;
+        $endWork = $request->endWork;
+        $endWorkHour = Carbon::parse($endWork)->hour;
+        $endWorkMinute = Carbon::parse($endWork)->minute;
+
+        $correctionRequestParams = [
             'date' => $id,
             'notes' => $request->notes,
-        ]);
+        ];
+
+        if (Auth::guard('admin')->check()) {
+            $userId = $request->userId;
+
+            $correctionRequestParams['user_id'] = $userId;
+            $correctionRequestParams['approved'] = 1;
+
+            $redirectRoute = redirect()->route('admin.attendance.list');
+        } elseif (Auth::check()) {
+            $userId = Auth::id();
+
+            $correctionRequestParams['user_id'] = $userId;
+            $correctionRequestParams['approved'] = 0;
+
+            $redirectRoute = redirect()->route('attendance.index');
+        }
+
+        $correctionRequest = CorrectionRequest::create($correctionRequestParams);
 
         Correction::create([
             'correction_request_id' => $correctionRequest->id,
             'stamp_type' => '出勤',
-            'corrected_at' => Carbon::parse($request->start_work),
+            'corrected_at' => Carbon::create($year, $month, $day, $startWorkHour, $startWorkMinute),
         ]);
         Correction::create([
             'correction_request_id' => $correctionRequest->id,
             'stamp_type' => '退勤',
-            'corrected_at' => Carbon::parse($request->end_work),
+            'corrected_at' => Carbon::create($year, $month, $day, $endWorkHour, $endWorkMinute),
         ]);
 
-        $breakStart = $request->break_start;
-        $breakEnd = $request->break_end;
+        $breakStart = $request->breakStart;
+        $breakEnd = $request->breakEnd;
+
+        if (is_null($breakStart) && is_null($breakEnd)) {
+            return $redirectRoute;
+        }
 
         foreach ($breakStart as $key => $value) {
+            if (is_null($breakStart[$key])) {
+                continue;
+            }
+            $breakStartHour = Carbon::parse($breakStart[$key])->hour;
+            $breakStartMinute = Carbon::parse($breakStart[$key])->minute;
             Correction::create([
                 'correction_request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩入',
-                'corrected_at' => Carbon::parse($breakStart[$key]),
+                'corrected_at' => Carbon::create($year, $month, $day, $breakStartHour, $breakStartMinute),
             ]);
         }
         foreach ($breakEnd as $key => $value) {
+            if (is_null($breakEnd[$key])) {
+                continue;
+            }
+            $breakEndHour = Carbon::parse($breakEnd[$key])->hour;
+            $breakEndMinute = Carbon::parse($breakEnd[$key])->minute;
             Correction::create([
                 'correction_request_id' => $correctionRequest->id,
                 'stamp_type' => '休憩戻',
-                'corrected_at' => Carbon::parse($breakEnd[$key]),
+                'corrected_at' => Carbon::create($year, $month, $day, $breakEndHour, $breakEndMinute),
             ]);
         }
-        return redirect()->route('attendance.index');
+        return $redirectRoute;
     }
 
     public function stampCorrectionRequestList()
     {
-        $userId = Auth::user()->id;
-        $correctionRequests = CorrectionRequest::where('user_id', $userId)->where('approved', 0)->get();
+        if (Auth::guard('admin')->check()) {
+            $correctionRequests = CorrectionRequest::where('approved', 0)->get();
+        } elseif (Auth::check()) {
+            $userId = Auth::user()->id;
+            $correctionRequests = CorrectionRequest::where('user_id', $userId)->where('approved', 0)->get();
+        } else {
+            return redirect()->route('login');
+        }
         return view('request-list', compact('correctionRequests'));
     }
 }

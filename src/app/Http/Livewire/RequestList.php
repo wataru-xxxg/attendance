@@ -14,16 +14,16 @@ class RequestList extends Component
 
     public function mount()
     {
-        $this->correctionRequests = CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 0)->get();
+        $this->correctionRequests = Auth::guard('admin')->check() ?  CorrectionRequest::where('approved', 0)->get() : CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 0)->get();
     }
 
     public function switchTab($tab)
     {
         $this->tab = $tab;
         if ($this->tab == 'pending') {
-            $this->correctionRequests = CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 0)->get();
+            $this->correctionRequests = Auth::guard('admin')->check() ? CorrectionRequest::where('approved', 0)->get() : CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 0)->get();
         } else {
-            $this->correctionRequests = CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 1)->get();
+            $this->correctionRequests = Auth::guard('admin')->check() ? CorrectionRequest::where('approved', 1)->get() : CorrectionRequest::where('user_id', Auth::user()->id)->where('approved', 1)->get();
         }
     }
 
