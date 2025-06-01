@@ -100,6 +100,23 @@
     background-color: #f0f0f0;
 }
 
+.export-btn {
+    display: block;
+    margin-left: auto;
+    margin-top: 40px;
+    padding: 10px 40px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.375rem;
+    transition: background-color 0.3s;
+}
+
+.export-btn:hover {
+    background-color: #333;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
     .header {

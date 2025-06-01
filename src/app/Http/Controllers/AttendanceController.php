@@ -128,6 +128,24 @@ class AttendanceController extends Controller
 
     public function attendanceCorrect(CorrectRequest $request)
     {
+        if (Auth::guard('admin')->check()) {
+            $userId = $request->userId;
+
+            $correctionRequestParams['user_id'] = $userId;
+            $correctionRequestParams['approved'] = 1;
+
+            $redirectRoute = redirect()->route('admin.attendance.list');
+        } elseif (Auth::check()) {
+            $userId = Auth::id();
+
+            $correctionRequestParams['user_id'] = $userId;
+            $correctionRequestParams['approved'] = 0;
+
+            $redirectRoute = redirect()->route('attendance.index');
+        } else {
+            return redirect()->route('login');
+        }
+
         $id = Carbon::parse($request->id)->format('Y-m-d');
         $year = Carbon::parse($request->id)->year;
         $month = Carbon::parse($request->id)->month;
@@ -144,22 +162,6 @@ class AttendanceController extends Controller
             'date' => $id,
             'notes' => $request->notes,
         ];
-
-        if (Auth::guard('admin')->check()) {
-            $userId = $request->userId;
-
-            $correctionRequestParams['user_id'] = $userId;
-            $correctionRequestParams['approved'] = 1;
-
-            $redirectRoute = redirect()->route('admin.attendance.list');
-        } elseif (Auth::check()) {
-            $userId = Auth::id();
-
-            $correctionRequestParams['user_id'] = $userId;
-            $correctionRequestParams['approved'] = 0;
-
-            $redirectRoute = redirect()->route('attendance.index');
-        }
 
         $correctionRequest = CorrectionRequest::create($correctionRequestParams);
 

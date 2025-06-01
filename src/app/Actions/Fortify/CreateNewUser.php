@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use App\Http\Requests\RegisterRequest;
+use App\Providers\OneTimePasswordServiceProvider;
+use App\Notifications\EmailVerificationOtp;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -25,10 +27,16 @@ class CreateNewUser implements CreatesNewUsers
             (new RegisterRequest())->messages(),
         )->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
+
+        $otpService = app(OneTimePasswordServiceProvider::class);
+        $otp = $otpService->generateOtp($user);
+        $user->notify(new EmailVerificationOtp($otp));
+
+        return $user;
     }
 }

@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property string $email
+ * @property \Carbon\Carbon|null $email_verified_at
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
-
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -49,5 +51,27 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($key !== $this->getRememberTokenName()) {
             parent::setAttribute($key, $value);
         }
+    }
+
+    /**
+     * メールアドレスが認証済みかどうかを判定
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        return ! is_null($this->email_verified_at);
+    }
+
+    /**
+     * メールアドレスを認証済みとしてマーク
+     *
+     * @return bool
+     */
+    public function markEmailAsVerified(): bool
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
     }
 }

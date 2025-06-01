@@ -37,4 +37,8 @@
             </tbody>
         </table>
     </div>
+
+    @if($userId)
+    <button wire:click="exportCsv" class="export-btn">CSV出力</button>
+    @endif
 </div>

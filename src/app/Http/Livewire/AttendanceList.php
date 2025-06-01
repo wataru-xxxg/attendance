@@ -5,9 +5,9 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Stamp;
-use Illuminate\Support\Facades\Auth;
 use App\Models\CorrectionRequest;
 use App\Models\Correction;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceList extends Component
 {
@@ -166,6 +166,109 @@ class AttendanceList extends Component
     {
         $this->currentMonth = $this->currentMonth->addMonth();
         $this->loadAttendanceData();
+    }
+
+    public function exportCsv()
+    {
+        $daysInMonth = $this->currentMonth->daysInMonth;
+        $attendanceData = [];
+
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $date = Carbon::create($this->currentMonth->year, $this->currentMonth->month, $i);
+            $dateKey = $date->format('Y-m-d');
+
+            $correctionRequest = CorrectionRequest::where('user_id', $this->userId)
+                ->where('approved', true)
+                ->where('date', $dateKey)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if ($correctionRequest) {
+                $beginWorkCorrection = $correctionRequest->corrections->where('stamp_type', '出勤')->first();
+                $beginWork = $beginWorkCorrection->corrected_at->format('H:i');
+
+                $endWorkCorrection = $correctionRequest->corrections->where('stamp_type', '退勤')->first();
+                $endWork = $endWorkCorrection->corrected_at->format('H:i');
+
+                $corrections = Correction::where('correction_request_id', $correctionRequest->id)->orderBy('corrected_at', 'desc')->get();
+
+                $breakTime = $this->calculateBreakTime($corrections);
+                $totalTime = $this->calculateTotalTime($beginWorkCorrection, $endWorkCorrection) - $breakTime;
+
+                $attendanceData[] = [
+                    'date' => $date->format('Y/m/d'),
+                    'dayOfWeek' => $date->locale('ja')->isoFormat('ddd'),
+                    'beginWork' => $beginWork,
+                    'endWork' => $endWork,
+                    'breakTime' => $this->formatTime($breakTime),
+                    'totalTime' => $this->formatTime($totalTime),
+                ];
+            }
+        }
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="attendance_' . $this->currentMonth->format('Y_m') . '.csv"',
+        ];
+
+        $callback = function () use ($attendanceData) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['日付', '曜日', '出勤', '退勤', '休憩時間', '合計時間']);
+
+            foreach ($attendanceData as $data) {
+                fputcsv($file, [
+                    $data['date'],
+                    $data['dayOfWeek'],
+                    $data['beginWork'],
+                    $data['endWork'],
+                    $data['breakTime'],
+                    $data['totalTime'],
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return new StreamedResponse($callback, 200, $headers);
+    }
+
+    private function calculateBreakTime($corrections)
+    {
+        if ($corrections->isEmpty()) {
+            return 0;
+        }
+
+        $breakTime = 0;
+        $previousStamp = null;
+        foreach ($corrections as $correction) {
+            if (is_null($previousStamp)) {
+                $previousStamp = $correction;
+                continue;
+            }
+
+            if ($previousStamp->stamp_type === '休憩戻') {
+                $breakTime += $correction->corrected_at->diffInMinutes($previousStamp->corrected_at);
+            }
+
+            $previousStamp = $correction;
+        }
+        return $breakTime;
+    }
+
+    private function calculateTotalTime($beginWorkCorrection, $endWorkCorrection)
+    {
+        if (is_null($beginWorkCorrection) || is_null($endWorkCorrection)) {
+            return 0;
+        }
+
+        return $endWorkCorrection->corrected_at->diffInMinutes($beginWorkCorrection->corrected_at);
+    }
+
+    private function formatTime($minutes)
+    {
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+        return sprintf('%02d:%02d', $hours, $remainingMinutes);
     }
 
     public function render()

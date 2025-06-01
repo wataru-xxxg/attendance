@@ -1,3 +1,7 @@
+.main {
+    background-color: #ffffff;
+}
+
 .container {
     max-width: 680px;
     margin: 0 auto;
