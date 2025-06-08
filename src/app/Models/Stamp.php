@@ -19,9 +19,10 @@ class Stamp extends Model
         'stamped_at',
     ];
 
-    public function scopeLastStamp($query, $userId)
+    public function scopeTodayLastStamp($query, $userId)
     {
         return $query->where('user_id', $userId)
+            ->whereDate('stamped_at', now())
             ->orderBy('stamped_at', 'desc')
             ->first();
     }
