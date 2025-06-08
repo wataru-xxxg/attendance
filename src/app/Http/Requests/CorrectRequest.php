@@ -57,12 +57,12 @@ class CorrectRequest extends FormRequest
             'endWork.after' => '出勤時間もしくは退勤時間が不適切な値です',
             'breakStart.*.regex' => '休憩開始時間が不適切な値です',
             'breakStart.*.required_with' => '休憩開始時間は必須です',
-            'breakStart.*.after' => '休憩時間が勤務時間外です',
-            'breakStart.*.before' => '休憩開始時間は退勤時間より前である必要があります',
+            'breakStart.*.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'breakStart.*.before' => '出勤時間もしくは退勤時間が不適切な値です',
             'breakEnd.*.regex' => '休憩終了時間が不適切な値です',
             'breakEnd.*.required_with' => '休憩終了時間は必須です',
-            'breakEnd.*.after' => '休憩時間が勤務時間外です',
-            'breakEnd.*.before' => '休憩時間が勤務時間外です',
+            'breakEnd.*.after' => '出勤時間もしくは退勤時間が不適切な値です',
+            'breakEnd.*.before' => '出勤時間もしくは退勤時間が不適切な値です',
             'notes.required' => '備考を記入してください',
         ];
     }

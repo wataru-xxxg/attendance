@@ -158,10 +158,8 @@ class AttendanceController extends Controller
         $endWorkHour = Carbon::parse($endWork)->hour;
         $endWorkMinute = Carbon::parse($endWork)->minute;
 
-        $correctionRequestParams = [
-            'date' => $id,
-            'notes' => $request->notes,
-        ];
+        $correctionRequestParams['date'] = $id;
+        $correctionRequestParams['notes'] = $request->notes;
 
         $correctionRequest = CorrectionRequest::create($correctionRequestParams);
 
