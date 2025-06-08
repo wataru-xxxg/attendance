@@ -4,7 +4,7 @@
 
 ### Docker ビルド
 
-1. git clone https://github.com/wataru-xxxg/flea-market.git
+1. git clone https://github.com/wataru-xxxg/attendance.git
 1. docker-compose up -d --build
 
 ### Laravel 環境構築
