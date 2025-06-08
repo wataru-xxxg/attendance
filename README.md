@@ -2,9 +2,11 @@
 
 ## 環境構築
 
-1. Docker を起動する
+1. git clone https://github.com/wataru-xxxg/attendance.git
 
-2. プロジェクト直下で、以下のコマンドを実行する
+2. Docker を起動する
+
+3. プロジェクト直下で、以下のコマンドを実行する
 
 ```
 make init
