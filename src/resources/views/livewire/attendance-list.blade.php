@@ -38,7 +38,7 @@
         </table>
     </div>
 
-    @if($userId)
+    @if(Auth::guard('admin')->check())
     <button wire:click="exportCsv" class="export-btn">CSV出力</button>
     @endif
 </div>
