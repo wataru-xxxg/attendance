@@ -16,7 +16,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $id = Auth::user()->id;
-        $lastStamp = Stamp::lastStamp($id);
+        $lastStamp = Stamp::todayLastStamp($id);
         return view('attendance', compact('lastStamp'));
     }
 
