@@ -90,21 +90,3 @@
 .logout-button:hover {
     cursor: pointer;
 }
-
-@media (max-width: 1024px) {
-    .search-container {
-        margin: 0 10px;
-    }
-
-    .logout-button,
-    .login-button {
-        font-size: 1rem;
-        margin-left: 0px;
-    }
-
-    .mypage-button,
-    .listing-button {
-        font-size: 1rem;
-        margin-left: 10px;
-    }
-}

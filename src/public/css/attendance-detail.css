@@ -160,19 +160,3 @@
     font-size: 0.875rem;
     text-align: left;
 }
-
-@media screen and (max-width: 768px) {
-    .detail-row {
-        flex-direction: column;
-    }
-
-    .label {
-        width: 100%;
-        padding: 10px 20px;
-        background-color: #f9f9f9;
-    }
-
-    .value {
-        padding: 10px 20px;
-    }
-}
