@@ -2,15 +2,20 @@
 
 ## 環境構築
 
+### Docker ビルド
+
 1. git clone https://github.com/wataru-xxxg/attendance.git
+1. docker-compose up -d --build
 
-2. Docker を起動する
+### Laravel 環境構築
 
-3. プロジェクト直下で、以下のコマンドを実行する
-
-```
-make init
-```
+1. docker-compose exec php bash
+1. composer install
+1. .env.example ファイルから.env を作成し、環境変数を変更
+1. php artisan key:generate
+1. php artisan migrate
+1. php artisan db:seed
+1. php artisan broadcast:time
 
 ## 使用技術(実行環境)
 
