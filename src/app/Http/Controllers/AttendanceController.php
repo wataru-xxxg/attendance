@@ -24,9 +24,11 @@ class AttendanceController extends Controller
     {
         $id = Auth::user()->id;
 
+        $truncatedTime = Carbon::parse($request->stamped_at)->truncatedTo('minute');
+
         Stamp::create([
             'user_id' => $id,
-            'stamped_at' => $request->stamped_at,
+            'stamped_at' => $truncatedTime,
             'stamp_type' => $request->stamp_type,
         ]);
 
