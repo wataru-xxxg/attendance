@@ -30,8 +30,13 @@
                     <td class="attendance-table-data">{{ $data['endWork'] }}</td>
                     <td class="attendance-table-data">{{ $data['breakTime'] }}</td>
                     <td class="attendance-table-data">{{ $data['totalTime'] }}</td>
-                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $data['id'], 'userId' => $data['user_id']]) }}"
+                    @if(Auth::guard('admin')->check())
+                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $data['id'], 'userId' => $userId]) }}"
                             class="detail-btn">詳細</a></td>
+                    @else
+                    <td class="attendance-table-data"><a href="{{ route('attendance.detail', ['id' => $data['id']]) }}"
+                            class="detail-btn">詳細</a></td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

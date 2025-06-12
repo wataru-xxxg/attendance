@@ -14,6 +14,11 @@ use App\Models\User;
 
 class AdminController extends Controller
 {
+    public function index()
+    {
+        return view('admin.login');
+    }
+
     public function adminLogin(LoginRequest $request)
     {
         $credentials = [
@@ -40,6 +45,11 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/admin/login');
+    }
+
+    public function attendanceList()
+    {
+        return view('admin.attendance-list');
     }
 
     public function staffList()

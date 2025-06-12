@@ -19,11 +19,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-Route::get('/admin/login', function () {
-    return view('admin.login');
-});
+Route::get('/admin/login', [AdminController::class, 'index'])->name('admin.login');
 
-Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'adminLogin'])->name('admin.login.post');
 
 Route::get('/attendance/{id}', [AttendanceController::class, 'attendanceDetail'])->name('attendance.detail');
 
@@ -32,9 +30,7 @@ Route::post('/attendance/{id}', [AttendanceController::class, 'attendanceCorrect
 Route::get('/stamp_correction_request/list', [AttendanceController::class, 'stampCorrectionRequestList'])->name('request.list');
 
 Route::middleware('auth:admin')->group(function () {
-    Route::get('/admin/attendance/list', function () {
-        return view('admin.attendance-list');
-    })->name('admin.attendance.list');
+    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceList'])->name('admin.attendance.list');
 
     Route::get('/admin/staff/list', [AdminController::class, 'staffList'])->name('admin.staff.list');
 
