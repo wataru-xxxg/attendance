@@ -23,7 +23,7 @@ class Stamp extends Model
     {
         return $query->where('user_id', $userId)
             ->whereDate('stamped_at', now())
-            ->orderBy('stamped_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->first();
     }
 }

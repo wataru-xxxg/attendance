@@ -63,7 +63,7 @@ class AdminAttendanceList extends Component
                 $stamps = Stamp::where('user_id', $user->id)
                     ->whereDate('stamped_at', '=', $dateKey)
                     ->whereIn('stamp_type', ['休憩入', '休憩戻'])
-                    ->orderBy('stamped_at', 'desc')
+                    ->orderBy('created_at', 'desc')
                     ->get();
 
                 $breakTime = $this->getBreakTimeAttribute($stamps);

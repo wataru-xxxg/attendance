@@ -24,7 +24,12 @@ class AttendanceController extends Controller
     {
         $id = Auth::user()->id;
 
-        $truncatedTime = Carbon::parse($request->stamped_at)->truncatedTo('minute');
+        $stampedYear = Carbon::parse($request->stamped_at)->setTimezone('Asia/Tokyo')->year;
+        $stampedMonth = Carbon::parse($request->stamped_at)->setTimezone('Asia/Tokyo')->month;
+        $stampedDay = Carbon::parse($request->stamped_at)->setTimezone('Asia/Tokyo')->day;
+        $stampedHour = Carbon::parse($request->stamped_at)->setTimezone('Asia/Tokyo')->hour;
+        $stampedMinute = Carbon::parse($request->stamped_at)->setTimezone('Asia/Tokyo')->minute;
+        $truncatedTime = Carbon::create($stampedYear, $stampedMonth, $stampedDay, $stampedHour, $stampedMinute);
 
         Stamp::create([
             'user_id' => $id,

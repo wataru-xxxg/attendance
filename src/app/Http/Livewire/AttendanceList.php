@@ -66,7 +66,7 @@ class AttendanceList extends Component
                 $stamps = Stamp::where('user_id', $userId)
                     ->whereDate('stamped_at', '=', $dateKey)
                     ->whereIn('stamp_type', ['休憩入', '休憩戻'])
-                    ->orderBy('stamped_at', 'desc')
+                    ->orderBy('created_at', 'desc')
                     ->get();
 
                 $breakTime = $this->getBreakTimeAttribute($stamps);
@@ -195,6 +195,36 @@ class AttendanceList extends Component
 
                 $breakTime = $this->calculateBreakTime($corrections);
                 $totalTime = $this->calculateTotalTime($beginWorkCorrection, $endWorkCorrection) - $breakTime;
+
+                $attendanceData[] = [
+                    'date' => $date->format('Y/m/d'),
+                    'dayOfWeek' => $date->locale('ja')->isoFormat('ddd'),
+                    'beginWork' => $beginWork,
+                    'endWork' => $endWork,
+                    'breakTime' => $this->formatTime($breakTime),
+                    'totalTime' => $this->formatTime($totalTime),
+                ];
+            } else {
+                $beginWorkStamp = Stamp::where('user_id', $this->userId)
+                    ->whereDate('stamped_at', '=', $dateKey)
+                    ->where('stamp_type', '出勤')
+                    ->first();
+                $beginWork = $beginWorkStamp ? $beginWorkStamp->stamped_at->format('H:i') : '';
+
+                $endWorkStamp = Stamp::where('user_id', $this->userId)
+                    ->whereDate('stamped_at', '=', $dateKey)
+                    ->where('stamp_type', '退勤')
+                    ->first();
+                $endWork = $endWorkStamp ? $endWorkStamp->stamped_at->format('H:i') : '';
+
+                $stamps = Stamp::where('user_id', $this->userId)
+                    ->whereDate('stamped_at', '=', $dateKey)
+                    ->whereIn('stamp_type', ['休憩入', '休憩戻'])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                $breakTime = $this->getBreakTimeAttribute($stamps);
+                $totalTime = $this->getTotalTimeAttribute($beginWorkStamp, $endWorkStamp) - $breakTime;
 
                 $attendanceData[] = [
                     'date' => $date->format('Y/m/d'),

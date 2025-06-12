@@ -8,20 +8,25 @@ use App\Models\CorrectionRequest;
 class Approve extends Component
 {
     public $correctionRequestId;
+    public $correctionRequest;
     public $buttonText;
     public $buttonClass;
 
     public function mount($correctionRequestId)
     {
-        $this->correctionRequestId = $correctionRequestId;
-        $this->buttonText = '承認';
+        $this->correctionRequest = CorrectionRequest::find($correctionRequestId);
+        if ($this->correctionRequest->approved == 1) {
+            $this->buttonText = '承認済み';
+            $this->buttonClass = 'approved disabled';
+        } else {
+            $this->buttonText = '承認';
+        }
     }
 
     public function approve()
     {
-        $correctionRequest = CorrectionRequest::find($this->correctionRequestId);
-        $correctionRequest->approved = 1;
-        $correctionRequest->save();
+        $this->correctionRequest->approved = 1;
+        $this->correctionRequest->save();
         $this->buttonText = '承認済み';
         $this->buttonClass = 'approved disabled';
     }
