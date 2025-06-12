@@ -8,6 +8,7 @@ use App\Models\Stamp;
 use App\Models\CorrectionRequest;
 use App\Models\Correction;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceList extends Component
 {

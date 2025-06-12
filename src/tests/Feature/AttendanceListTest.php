@@ -118,8 +118,7 @@ class AttendanceListTest extends TestCase
 
         // 詳細ボタンのリンクを取得
         $detailLink = route('attendance.detail', [
-            'id' => $this->startWorkStamp->stamped_at->format('Ymd'),
-            'userId' => $this->user->id
+            'id' => $this->startWorkStamp->stamped_at->format('Ymd')
         ]);
 
         // 詳細ボタンが存在することを確認
