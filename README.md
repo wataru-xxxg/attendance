@@ -35,16 +35,18 @@
 
 ## テストアカウント
 
-一般ユーザー
-name: 山田 太郎
-email: yamada@test.com
-password: password
+### 一般ユーザー
+
+- name: 山田 太郎
+- email: yamada@test.com
+- password: password
 
 ---
 
-管理者ユーザー
-name: 管理者テスト  
-email: admin@test.com
-password: password
+### 管理者ユーザー
+
+- name: 管理者テスト
+- email: admin@test.com
+- password: password
 
 ---
