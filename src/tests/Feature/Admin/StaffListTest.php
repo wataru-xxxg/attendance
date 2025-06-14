@@ -49,20 +49,43 @@ class StaffListTest extends TestCase
             'stamped_at' => $today->copy()->setHour(9)->setMinute(0),
             'stamp_type' => '出勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '出勤')->update([
+            'created_at' => $this->user1StartWork->stamped_at,
+            'updated_at' => $this->user1StartWork->stamped_at,
+        ]);
+
         $this->user1EndWork = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $today->copy()->setHour(18)->setMinute(0),
             'stamp_type' => '退勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '退勤')->update([
+            'created_at' => $this->user1EndWork->stamped_at,
+            'updated_at' => $this->user1EndWork->stamped_at,
+        ]);
+
         $this->user1BreakStartTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $today->copy()->setHour(12)->setMinute(0),
             'stamp_type' => '休憩入',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩入')->update([
+            'created_at' => $this->user1BreakStartTimeStamp->stamped_at,
+            'updated_at' => $this->user1BreakStartTimeStamp->stamped_at,
+        ]);
+
         $this->user1BreakEndTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $today->copy()->setHour(13)->setMinute(0),
             'stamp_type' => '休憩戻',
+        ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩戻')->update([
+            'created_at' => $this->user1BreakEndTimeStamp->stamped_at,
+            'updated_at' => $this->user1BreakEndTimeStamp->stamped_at,
         ]);
 
         // ユーザー2の勤怠データを作成
@@ -71,20 +94,43 @@ class StaffListTest extends TestCase
             'stamped_at' => $today->copy()->setHour(9)->setMinute(30),
             'stamp_type' => '出勤',
         ]);
+
+        Stamp::where('user_id', $this->user2->id)->where('stamp_type', '出勤')->update([
+            'created_at' => $this->user2StartWork->stamped_at,
+            'updated_at' => $this->user2StartWork->stamped_at,
+        ]);
+
         $this->user2EndWork = Stamp::create([
             'user_id' => $this->user2->id,
             'stamped_at' => $today->copy()->setHour(18)->setMinute(30),
             'stamp_type' => '退勤',
         ]);
+
+        Stamp::where('user_id', $this->user2->id)->where('stamp_type', '退勤')->update([
+            'created_at' => $this->user2EndWork->stamped_at,
+            'updated_at' => $this->user2EndWork->stamped_at,
+        ]);
+
         $this->user2BreakStartTimeStamp = Stamp::create([
             'user_id' => $this->user2->id,
             'stamped_at' => $today->copy()->setHour(12)->setMinute(0),
             'stamp_type' => '休憩入',
         ]);
+
+        Stamp::where('user_id', $this->user2->id)->where('stamp_type', '休憩入')->update([
+            'created_at' => $this->user2BreakStartTimeStamp->stamped_at,
+            'updated_at' => $this->user2BreakStartTimeStamp->stamped_at,
+        ]);
+
         $this->user2BreakEndTimeStamp = Stamp::create([
             'user_id' => $this->user2->id,
             'stamped_at' => $today->copy()->setHour(13)->setMinute(0),
             'stamp_type' => '休憩戻',
+        ]);
+
+        Stamp::where('user_id', $this->user2->id)->where('stamp_type', '休憩戻')->update([
+            'created_at' => $this->user2BreakEndTimeStamp->stamped_at,
+            'updated_at' => $this->user2BreakEndTimeStamp->stamped_at,
         ]);
 
         $this->user1BreakTime = $this->user1BreakStartTimeStamp->stamped_at->diffInMinutes($this->user1BreakEndTimeStamp->stamped_at);
@@ -142,20 +188,43 @@ class StaffListTest extends TestCase
             'stamped_at' => $previousMonth->copy()->setHour(9)->setMinute(0),
             'stamp_type' => '出勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '出勤')->update([
+            'created_at' => $user1PreviousMonthStartWork->stamped_at,
+            'updated_at' => $user1PreviousMonthStartWork->stamped_at,
+        ]);
+
         $user1PreviousMonthEndWork = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $previousMonth->copy()->setHour(18)->setMinute(0),
             'stamp_type' => '退勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '退勤')->update([
+            'created_at' => $user1PreviousMonthEndWork->stamped_at,
+            'updated_at' => $user1PreviousMonthEndWork->stamped_at,
+        ]);
+
         $user1PreviousMonthBreakStartTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $previousMonth->copy()->setHour(12)->setMinute(0),
             'stamp_type' => '休憩入',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩入')->update([
+            'created_at' => $user1PreviousMonthBreakStartTimeStamp->stamped_at,
+            'updated_at' => $user1PreviousMonthBreakStartTimeStamp->stamped_at,
+        ]);
+
         $user1PreviousMonthBreakEndTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $previousMonth->copy()->setHour(13)->setMinute(0),
             'stamp_type' => '休憩戻',
+        ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩戻')->update([
+            'created_at' => $user1PreviousMonthBreakEndTimeStamp->stamped_at,
+            'updated_at' => $user1PreviousMonthBreakEndTimeStamp->stamped_at,
         ]);
 
         $user1PreviousMonthBreakTime = $user1PreviousMonthBreakStartTimeStamp->stamped_at->diffInMinutes($user1PreviousMonthBreakEndTimeStamp->stamped_at);
@@ -193,20 +262,43 @@ class StaffListTest extends TestCase
             'stamped_at' => $nextMonth->copy()->setHour(9)->setMinute(0),
             'stamp_type' => '出勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '出勤')->update([
+            'created_at' => $user1NextMonthStartWork->stamped_at,
+            'updated_at' => $user1NextMonthStartWork->stamped_at,
+        ]);
+
         $user1NextMonthEndWork = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $nextMonth->copy()->setHour(18)->setMinute(0),
             'stamp_type' => '退勤',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '退勤')->update([
+            'created_at' => $user1NextMonthEndWork->stamped_at,
+            'updated_at' => $user1NextMonthEndWork->stamped_at,
+        ]);
+
         $user1NextMonthBreakStartTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $nextMonth->copy()->setHour(12)->setMinute(0),
             'stamp_type' => '休憩入',
         ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩入')->update([
+            'created_at' => $user1NextMonthBreakStartTimeStamp->stamped_at,
+            'updated_at' => $user1NextMonthBreakStartTimeStamp->stamped_at,
+        ]);
+
         $user1NextMonthBreakEndTimeStamp = Stamp::create([
             'user_id' => $this->user1->id,
             'stamped_at' => $nextMonth->copy()->setHour(13)->setMinute(0),
             'stamp_type' => '休憩戻',
+        ]);
+
+        Stamp::where('user_id', $this->user1->id)->where('stamp_type', '休憩戻')->update([
+            'created_at' => $user1NextMonthBreakEndTimeStamp->stamped_at,
+            'updated_at' => $user1NextMonthBreakEndTimeStamp->stamped_at,
         ]);
 
         $user1NextMonthBreakTime = $user1NextMonthBreakStartTimeStamp->stamped_at->diffInMinutes($user1NextMonthBreakEndTimeStamp->stamped_at);

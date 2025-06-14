@@ -33,20 +33,43 @@ class AttendanceListTest extends TestCase
             'stamp_type' => '出勤',
             'stamped_at' => Carbon::createFromTime(9, 0, 0),
         ]);
+
+        Stamp::where('user_id', $this->user->id)->where('stamp_type', '出勤')->update([
+            'created_at' => $this->startWorkStamp->stamped_at,
+            'updated_at' => $this->startWorkStamp->stamped_at,
+        ]);
+
         $this->breakStartTimeStamp = Stamp::factory()->create([
             'user_id' => $this->user->id,
             'stamp_type' => '休憩入',
             'stamped_at' => Carbon::createFromTime(12, 0, 0),
         ]);
+
+        Stamp::where('user_id', $this->user->id)->where('stamp_type', '休憩入')->update([
+            'created_at' => $this->breakStartTimeStamp->stamped_at,
+            'updated_at' => $this->breakStartTimeStamp->stamped_at,
+        ]);
+
         $this->breakEndTimeStamp = Stamp::factory()->create([
             'user_id' => $this->user->id,
             'stamp_type' => '休憩戻',
             'stamped_at' => Carbon::createFromTime(13, 0, 0),
         ]);
+
+        Stamp::where('user_id', $this->user->id)->where('stamp_type', '休憩戻')->update([
+            'created_at' => $this->breakEndTimeStamp->stamped_at,
+            'updated_at' => $this->breakEndTimeStamp->stamped_at,
+        ]);
+
         $this->endWorkStamp = Stamp::factory()->create([
             'user_id' => $this->user->id,
             'stamp_type' => '退勤',
             'stamped_at' => Carbon::createFromTime(18, 0, 0),
+        ]);
+
+        Stamp::where('user_id', $this->user->id)->where('stamp_type', '退勤')->update([
+            'created_at' => $this->endWorkStamp->stamped_at,
+            'updated_at' => $this->endWorkStamp->stamped_at,
         ]);
     }
 
