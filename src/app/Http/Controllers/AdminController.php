@@ -5,11 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Models\CorrectionRequest;
-use App\Models\Stamp;
-use App\Models\Correction;
-use App\Http\Requests\CorrectRequest;
 use App\Models\User;
 
 class AdminController extends Controller
